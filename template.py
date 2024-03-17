@@ -4,7 +4,7 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
-project_name = "Plant Disease Detection"
+project_name = "Project"
 
 list_of_files = [
 		".github/workflows/.gitkeep",
@@ -18,7 +18,7 @@ list_of_files = [
 		f"src/{project_name}/pipeline/training_pipeline.py",
 		f"src/{project_name}/pipeline/prediction_pieline.py",
 		f"src/{project_name}/exception.py",
-		f"src/{project_name}/logging.py",
+		f"src/{project_name}/logger.py",
 		f"src/{project_name}/utils.py",
 		"test.py",
 		"app.py"
