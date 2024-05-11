@@ -3,13 +3,13 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-artifacts/model.keras
+#artifacts/model.keras
 # C extensions
 *.so
 .keras
 .vscode
-artifacts/*
-#artifacts/data_validation/*
+artifacts/data_ingestion/*
+artifacts/data_validation/*
 
 # Distribution / packaging
 .Python
