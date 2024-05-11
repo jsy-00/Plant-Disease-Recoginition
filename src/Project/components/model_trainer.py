@@ -1,11 +1,14 @@
 import os
 import sys
+import zipfile
 import pandas as pd
 import numpy as np
 from dataclasses import dataclass
 
 from src.Project.exception import CustomException
 from src.Project.logger import logging
+from src.Project.entity.config_entity import ModelTrainerConfig
+from src.Project.entity.artifact_entity import ModelTrainerArtifact
 
 
 import tensorflow as tf
@@ -16,51 +19,79 @@ from keras import layers, models
 from keras.layers import Dense, MaxPooling2D, Flatten, BatchNormalization, Dropout, GlobalAveragePooling2D
 
 # Pre Trained model Import
-from keras.applications import EfficientNetV2L
+from tensorflow.keras.applications.inception_v3 import InceptionV3
+#from keras.applications import EfficientNetV2L
 
 import warnings
 warnings.filterwarnings('ignore')
 
 
 @dataclass
-class ModelTrainerConfig:
-    trained_model_file_path = os.path.join('artifact','model.keras')
+class ModelTrainer:
+    def __init__(
+        self,
+        model_trainer_config: ModelTrainerConfig,
+    ):
+        self.model_trainer_config = model_trainer_config
 
-class modeltrainer:
-    def __init__(self):
-       self.model_trainer_config = ModelTrainerConfig()
+    def initiate_model_trainer(self,) -> ModelTrainerArtifact:
 
+        logging.info("Entered initiate_model_trainer method of ModelTrainer class")
 
-    def get_train_val_batches(self, train_dir, valid_dir, batch_size):
         try:
-           train_data = tf.keras.preprocessing.image_dataset_from_directory(
-                        train_dir,
-                        batch_size = batch_size,
-                        image_size = (64,64),
-                        shuffle = True
-                        )
-           print(f'Total {len(train_data.class_names)} nummber of classes is detected')
+            logging.info("Unzipping data")
 
-           val_data = tf.keras.preprocessing.image_dataset_from_directory(
-                valid_dir,
-                batch_size = batch_size,
-                image_size = (64,64),
-                shuffle = True
-                )
-           self.class_labels = train_data.class_names
-           
-           return train_data, val_data, self.class_labels
+            with zipfile.ZipFile("data.zip", 'r') as zip_ref:
+                zip_ref.extractall()
+                print("\n Unzipping data successfull \n")
+            os.system("rm data.zip")
+
+
+            train_dir = "train"
+            valid_dir = "valid"
+            batch_size=self.model_trainer_config.batch_size
+            no_epochs = self.model_trainer_config.no_epochs
+
+            self.model_training(train_dir, valid_dir, batch_size, no_epochs)
+
+
+            os.system("rm -rf train")
+            os.system("rm -rf valid")
+            os.system("rm -rf test")
 
         except Exception as e:
-           raise CustomException(e,sys)
-        
-    def initiatemodel(self, train_dir, valid_dir, batch_size, epoch):
+            raise CustomException(e,sys)
+
+    def data_preprocessing(self,train_dir,valid_dir,batch_size):
+        try:
+            train_data = tf.keras.preprocessing.image_dataset_from_directory(
+                        train_dir,
+                        batch_size = batch_size,
+                        image_size = (228,228),
+                        shuffle = True
+                        )
+            print(f'Total {len(train_data.class_names)} nummber of classes is detected')
+
+            val_data = tf.keras.preprocessing.image_dataset_from_directory(
+                valid_dir,
+                batch_size = batch_size,
+                image_size = (228,228),
+                shuffle = True
+                )
+            self.class_labels = train_data.class_names
+           
+            return train_data, val_data, self.class_labels
+        except Exception as e:
+            raise CustomException(e,sys)
+
+
+    def model_training(self,train_dir, valid_dir, batch_size, epoch):
         try:
             #load the data
-            train_data, val_data, class_labels = self.get_train_val_batches(train_dir, valid_dir, batch_size)
+            train_data, val_data, class_labels = self.data_preprocessing(train_dir, valid_dir, batch_size)
            
-            base_model = EfficientNetV2L(
-                          input_shape=(64,64,3),
+            base_model = InceptionV3(
+                          input_shape=(228,228,3),
                           include_top=False,
                           weights='imagenet'
                           )
@@ -93,7 +124,8 @@ class modeltrainer:
 
             my_callbacks = [
                             keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=2, restore_best_weights=True),
-                            keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=4, min_lr=0.001, verbose=1)
+                            keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=4, min_lr=0.001, verbose=1),
+                            keras.callbacks.TensorBoard(log_dir='logs',histogram_freq=1, write_graph=True, write_images=True)
                             ]
 
             model.fit(
@@ -103,7 +135,7 @@ class modeltrainer:
                 callbacks = [my_callbacks]
             )
 
-            #model.save(self.model_trainer_config.trained_model_file_path)
+            model.save(os.path.join('artifacts',"model.keras"))
 
             logging.info("Model Training has completed")
 
@@ -115,7 +147,7 @@ class modeltrainer:
             if self.class_labels is not None:
                 return self.class_labels
             else:
-                raise CustomException("Class labels are not available. Please run get_train_val_batches method first.", sys)
+                raise CustomException("Class labels are not available. Please run data_preprocessing method first.", sys)
         except Exception as e:
             raise CustomException(e,sys)
                 

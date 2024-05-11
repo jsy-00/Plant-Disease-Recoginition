@@ -3,7 +3,7 @@ from src.Project.logger import logging
 from src.Project.exception import CustomException
 from src.Project.components.data_ingestion import DataIngestion
 from src.Project.components.data_validation import DataValidation
-#from src.Project.components.model_trainer import ModelTrainer
+from src.Project.components.model_trainer import ModelTrainer
 
 
 from src.Project.entity.config_entity import (DataIngestionConfig,
@@ -42,7 +42,7 @@ class TrainPipeline:
             return data_ingestion_artifact
 
         except Exception as e:
-            raise AppException(e, sys)
+            raise CustomException(e, sys)
     
     def start_data_validation(
         self, data_ingestion_artifact: DataIngestionArtifact
@@ -66,7 +66,17 @@ class TrainPipeline:
             return data_validation_artifact
 
         except Exception as e:
-            raise AppException(e, sys) from e
+            raise CustomException(e, sys) from e
+    def start_model_trainer(self) -> ModelTrainerArtifact:
+        try:
+            model_trainer = ModelTrainer(
+                model_trainer_config=self.model_trainer_config,
+            )
+            model_trainer_artifact = model_trainer.initiate_model_trainer()
+            return model_trainer_artifact
+
+        except Exception as e:
+            raise CustomException(e, sys)
 
     
     def run_pipeline(self) -> None:
@@ -76,12 +86,12 @@ class TrainPipeline:
                 data_ingestion_artifact=data_ingestion_artifact
             )
 
-            #if data_validation_artifact.validation_status == True:
-            #    model_trainer_artifact = self.start_model_trainer()
+            if data_validation_artifact.validation_status == True:
+                model_trainer_artifact = self.start_model_trainer()
             
-            #else:
-            #    raise Exception("Your data is not in correct format")
+            else:
+                raise Exception("Your data is not in correct format")
 
         
         except Exception as e:
-            raise AppException(e, sys)
+            raise CustomException(e, sys)
