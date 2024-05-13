@@ -31,7 +31,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # sidebar
-img_side = r"Plant-Disease-Recoginition/Images/img2.png"
+img_side = "Images/img2.png"
 with st.sidebar:
     with st.container():
         l, m, r = st.columns((1,3,1))
