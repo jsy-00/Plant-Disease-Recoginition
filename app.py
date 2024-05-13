@@ -31,7 +31,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # sidebar
-img_side = "Plant-Disease-Detection/Images/img2.png"
+img_side = r"Plant-Disease-Detection/Images/img2.png"
 with st.sidebar:
     with st.container():
         l, m, r = st.columns((1,3,1))
@@ -106,7 +106,7 @@ elif choose == "Disease Recognition":
     st.header("Disease Recognition")
     input_image = st.file_uploader("Choose an Image:",type=['jpg', 'png', 'jpeg'])
     if not input_image:
-        input_image = "Plant-Disease-Detection/Images/test.jpg"
+        input_image = r"Plant-Disease-Detection/Images/test.jpg"
     if st.button("show image"):
         st.image(input_image, use_column_width=True)
     
