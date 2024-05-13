@@ -59,7 +59,7 @@ with st.sidebar:
 
 if choose == "Home":
     st.header("PLANT DISEASE RECOGNITION SYSTEM")
-    image_path = ("Plant-Disease-Recoginition/Images/plant.jpeg")
+    image_path = ("Images/plant.jpeg")
     st.image(image_path,use_column_width=True)
     st.markdown("""
     Welcome to the Plant Disease Recognition System! 🌿🔍
@@ -106,7 +106,7 @@ elif choose == "Disease Recognition":
     st.header("Disease Recognition")
     input_image = st.file_uploader("Choose an Image:",type=['jpg', 'png', 'jpeg'])
     if not input_image:
-        input_image = r"Plant-Disease-Recoginition/Images/test.jpg"
+        input_image = "Images/test.jpg"
     if st.button("show image"):
         st.image(input_image, use_column_width=True)
     
