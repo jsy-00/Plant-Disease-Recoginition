@@ -13,7 +13,7 @@ st.set_page_config(
 
 # Tensorflow model prediction
 def model_prediction(input_image):
-    trained_model = tf.keras.models.load_model("Plant-Disease-Detection/model.keras")
+    trained_model = tf.keras.models.load_model("model.keras")
     image = tf.keras.preprocessing.image.load_img(input_image,target_size=(228,228))
     input_arr = tf.keras.preprocessing.image.img_to_array(image)
     input_arr = np.array([input_arr]) # To convert single image to batch
