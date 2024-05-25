@@ -25,3 +25,39 @@
 ## Introduction
 
 <p> In modern agriculture, plants are vulnerable to diseases due to various factors such as fertilizers, cultural practices, and environmental conditions. These diseases not only affect agricultural yield but also impact the economy reliant upon it. The ability to detect plant diseases early on can significantly aid farmers in efficiently cultivating crops, both qualitatively and quantitatively. Plant Disease Detection aims to address this critical issue by providing a solution to identify diseases in plants before they spread. Through our project, we endeavor to empower farmers with timely warnings, enabling them to take proactive measures to protect their crops and sustain agricultural productivity. </p>
+
+
+## Project Overview
+
+The Plant Disease Recognition system is built using convolutional neural networks (CNNs), leveraging frameworks like TensorFlow and Keras for model development and training. The model is trained on a dataset comprising images of various plant leaves, each labeled with specific disease symptoms or classified as healthy.
+
+## Features
+
+- **Image Processing**: Pre-processing steps to enhance the image quality and prepare data for the model.
+- **Disease Classification**: Classifies plant diseases into multiple categories based on visible symptoms.
+- **Accuracy and Performance**: Optimized for high accuracy and fast performance to facilitate real-time applications.
+
+## Installation
+
+Clone this repository to your local machine:
+
+```bash
+git clone https://github.com/aman977381/Plant-Disease-Recoginition.git
+cd Plant-Disease-Recoginition
+```
+
+
+## Prerequisites
+Ensure you have Python installed and then install the required packages:
+```bash
+pip install -r requirements.txt
+```
+
+## Contributing
+Contributions to improve the Plant Disease Recognition project are welcome. Please follow these steps to contribute:
+
+- Fork the repository.
+- Create a new branch (git checkout -b feature_branch).
+- Make your changes and commit them (git commit -am 'Add some feature').
+- Push to the branch (git push origin feature_branch).
+- Open a pull request.
